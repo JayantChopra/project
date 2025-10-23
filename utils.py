@@ -17,8 +17,17 @@ def save_json(data, path: str):
 
 def file_hash(path: str):
     """Return SHA-256 hash of a file."""
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"File not found: {path}")
+    hasher = hashlib.sha256()
+    buf_size = 4096
     with open(path, "rb") as f:
-        return hashlib.sha256(f.read()).hexdigest()
+        while True:
+            chunk = f.read(buf_size)
+            if not chunk:
+                break
+            hasher.update(chunk)
+    return hasher.hexdigest()
 
 def timeit(func):
     """Decorator to measure function runtime."""

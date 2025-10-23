@@ -9,6 +9,16 @@ logger = get_logger("main")
 
 
 def summarize_data(processor, output_path):
+    """
+    Generate a summary of the dataset and save it to a JSON file.
+
+    Args:
+        processor (DataProcessor): The data processor instance.
+        output_path (str): Path where the summary JSON should be saved.
+
+    Returns:
+        None
+    """
     summary = processor.summarize()
     save_json(summary, output_path)
     logger.info(f"✅ Summary saved to {output_path}")
@@ -16,6 +26,16 @@ def summarize_data(processor, output_path):
 
 
 def detect_anomalies(processor, threshold):
+    """
+    Detect anomalies in the dataset using Z-score method.
+
+    Args:
+        processor (DataProcessor): The data processor instance.
+        threshold (float): Z-score threshold for anomaly detection.
+
+    Returns:
+        list: List of detected anomalies, or empty list if none.
+    """
     anomalies = processor.detect_anomalies(z_threshold=threshold)
     if anomalies:
         logger.warning(f"⚠️ Anomalies detected: {anomalies}")
@@ -25,6 +45,15 @@ def detect_anomalies(processor, threshold):
 
 
 def correlation_analysis(processor):
+    """
+    Perform correlation analysis on numeric columns and save the matrix to JSON.
+
+    Args:
+        processor (DataProcessor): The data processor instance.
+
+    Returns:
+        None
+    """
     corr = processor.data.corr().to_dict()
     if corr:
         corr_path = "output/correlation.json"
@@ -36,12 +65,32 @@ def correlation_analysis(processor):
 
 
 def export_cleaned_data(processor):
+    """
+    Export the cleaned dataset to a CSV file.
+
+    Args:
+        processor (DataProcessor): The data processor instance.
+
+    Returns:
+        None
+    """
     cleaned_path = processor.export_cleaned("output/cleaned.csv")
     logger.info(f"🧼 Cleaned data exported to {cleaned_path}")
     logger.info(f"📦 File hash: {file_hash(cleaned_path)}")
 
 
 def main():
+    """
+    Main entry point for the Data Processor CLI.
+
+    Parses command-line arguments and executes the specified action:
+    - summarize: Generate and save data summary.
+    - analyze: Detect and log anomalies.
+    - correlate: Compute and save correlation matrix.
+    - export: Export cleaned data.
+
+    Handles file existence checks and logging.
+    """
     parser = argparse.ArgumentParser(description="Data Processor CLI")
     parser.add_argument(
         "action",
