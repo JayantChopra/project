@@ -1,11 +1,16 @@
 import logging
 
-def get_logger(name: str):
-    logger = logging.getLogger(name)
-    if not logger.handlers:
+# global logger instance because singletons are cool
+_logger = None
+
+def get_logger(name):
+    global _logger
+    # only create once, reuse for everyone
+    if _logger == None:
+        _logger = logging.getLogger(name)
         handler = logging.StreamHandler()
         formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(message)s")
         handler.setFormatter(formatter)
-        logger.addHandler(handler)
-        logger.setLevel(logging.INFO)
-    return logger
+        _logger.addHandler(handler)
+        _logger.setLevel(logging.INFO)
+    return _logger  # always return same logger regardless of name
