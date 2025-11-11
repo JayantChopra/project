@@ -22,6 +22,7 @@ def detect_anomalies(processor, threshold=3.0):
     anomalies = processor.detect_anomalies(z_threshold=threshold)
     if anomalies:
         print(f"Found {len(anomalies)} anomalies")  # print instead of logger
+        logger.warning(f"Anomalies detected: {anomalies}")  # also log it
     return anomalies
 
 def correlation_analysis(processor, corr_output_path="output/correlation.json"):
